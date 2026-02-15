@@ -1,4 +1,6 @@
 import { useState } from "react";
+import Home from "./pages/Home";
+
 
 export default function App() {
   const subjects = [
@@ -10,7 +12,10 @@ export default function App() {
     "Managerial Economics",
   ];
 
-  const [selectedSubject, setSelectedSubject] = useState(null);
+ const [entered, setEntered] = useState(false);
+const [selectedSubject, setSelectedSubject] = useState(null);
+
+
 
   // SUBJECT PAGE
   if (selectedSubject) {
@@ -70,6 +75,10 @@ export default function App() {
   }
 
   // HOME PAGE
+  if (!entered) {
+  return <Home onEnter={() => setEntered(true)} />;
+}
+
   return (
     <div>
       <header

@@ -7,7 +7,6 @@ export default function App() {
   const [semester, setSemester] = useState(null);
   const [selectedSubject, setSelectedSubject] = useState(null);
 
-  // SUBJECT DATA (you can customize later)
   const subjectsData = {
     "1-1": ["MFCS", "Data Structures"],
     "1-2": ["Java", "Computer Architecture"],
@@ -23,12 +22,12 @@ export default function App() {
       <div>
         <header style={headerStyle}>📚 Surya Notes Portal</header>
 
-        <div style={{ padding: 40 }}>
-          <button onClick={() => setSelectedSubject(null)}>
+        <div style={containerStyle}>
+          <button style={backBtn} onClick={() => setSelectedSubject(null)}>
             ⬅ Back
           </button>
 
-          <h2>{selectedSubject}</h2>
+          <h2 style={titleStyle}>{selectedSubject}</h2>
 
           <div style={cardContainer}>
             {units.map((unit, index) => (
@@ -51,12 +50,12 @@ export default function App() {
       <div>
         <header style={headerStyle}>📚 Surya Notes Portal</header>
 
-        <div style={{ padding: 40 }}>
-          <button onClick={() => setSemester(null)}>
+        <div style={containerStyle}>
+          <button style={backBtn} onClick={() => setSemester(null)}>
             ⬅ Back
           </button>
 
-          <h2>Select Subject</h2>
+          <h2 style={titleStyle}>Select Subject</h2>
 
           <div style={cardContainer}>
             {subjects.map((sub, index) => (
@@ -64,6 +63,12 @@ export default function App() {
                 key={index}
                 style={cardStyle}
                 onClick={() => setSelectedSubject(sub)}
+                onMouseEnter={(e) =>
+                  (e.currentTarget.style.transform = "scale(1.05)")
+                }
+                onMouseLeave={(e) =>
+                  (e.currentTarget.style.transform = "scale(1)")
+                }
               >
                 {sub}
               </div>
@@ -80,10 +85,12 @@ export default function App() {
       <div>
         <header style={headerStyle}>📚 Surya Notes Portal</header>
 
-        <div style={{ padding: 40 }}>
-          <button onClick={() => setYear(null)}>⬅ Back</button>
+        <div style={containerStyle}>
+          <button style={backBtn} onClick={() => setYear(null)}>
+            ⬅ Back
+          </button>
 
-          <h2>Select Semester</h2>
+          <h2 style={titleStyle}>Select Semester</h2>
 
           <div style={cardContainer}>
             {[1, 2].map((sem) => (
@@ -107,8 +114,8 @@ export default function App() {
       <div>
         <header style={headerStyle}>📚 Surya Notes Portal</header>
 
-        <div style={{ padding: 40 }}>
-          <h2>Select Year</h2>
+        <div style={containerStyle}>
+          <h2 style={titleStyle}>Select Year</h2>
 
           <div style={cardContainer}>
             {[1, 2].map((yr) => (
@@ -126,34 +133,53 @@ export default function App() {
     );
   }
 
-  // HOME PAGE
   return <Home onEnter={() => setEntered(true)} />;
 }
 
-// 🎨 STYLES
+// 🎨 RESPONSIVE STYLES
+
 const headerStyle = {
   background: "#4f46e5",
   color: "white",
-  padding: "15px 25px",
-  fontSize: "20px",
+  padding: "12px 20px",
+  fontSize: "clamp(16px, 3vw, 22px)", // responsive text
   fontWeight: "bold",
+  textAlign: "center",
+};
+
+const containerStyle = {
+  padding: "20px 5vw", // responsive padding
+};
+
+const titleStyle = {
+  fontSize: "clamp(18px, 4vw, 26px)",
+  marginBottom: "15px",
+};
+
+const backBtn = {
+  marginBottom: 20,
+  padding: "8px 14px",
+  borderRadius: "8px",
+  border: "none",
+  background: "#e5e7eb",
+  cursor: "pointer",
 };
 
 const cardContainer = {
   marginTop: 20,
-  display: "flex",
-  flexWrap: "wrap",
+  display: "grid",
+  gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))",
   gap: 20,
 };
 
 const cardStyle = {
-  flex: "1 1 200px",
-  padding: 20,
-  borderRadius: 12,
-  background: "#9b1212",
+  padding: "18px",
+  borderRadius: "16px",
+  background: "linear-gradient(135deg, #7f1d1d, #b91c1c)",
   color: "white",
-  boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
+  boxShadow: "0 6px 15px rgba(0,0,0,0.2)",
   fontWeight: "bold",
   cursor: "pointer",
   textAlign: "center",
+  transition: "0.3s",
 };

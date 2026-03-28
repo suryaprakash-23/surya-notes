@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Home from "./pages/Home";
 
 export default function App() {
@@ -7,6 +7,17 @@ export default function App() {
   const [semester, setSemester] = useState(null);
   const [selectedSubject, setSelectedSubject] = useState(null);
 
+  // ✅ Detect Mobile / Desktop
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   const subjectsData = {
     "1-1": ["MFCS", "Data Structures"],
     "1-2": ["Java", "Computer Architecture"],
@@ -14,144 +25,130 @@ export default function App() {
     "2-2": ["Managerial Economics"],
   };
 
-  // SUBJECT PAGE (UNITS)
+  const units = ["Unit 1", "Unit 2", "Unit 3", "Unit 4", "Unit 5"];
+
+  // 🔁 Layout
+  const Layout = ({ children }) => (
+    <div>
+      <header style={headerStyle(isMobile)}>📚 Surya Notes Portal</header>
+      <div style={containerStyle(isMobile)}>{children}</div>
+    </div>
+  );
+
+  // SUBJECT PAGE
   if (selectedSubject) {
-    const units = ["Unit 1", "Unit 2", "Unit 3", "Unit 4", "Unit 5"];
-
     return (
-      <div>
-        <header style={headerStyle}>📚 Surya Notes Portal</header>
+      <Layout>
+        <button style={backBtn} onClick={() => setSelectedSubject(null)}>
+          ⬅ Back
+        </button>
 
-        <div style={containerStyle}>
-          <button style={backBtn} onClick={() => setSelectedSubject(null)}>
-            ⬅ Back
-          </button>
+        <h2 style={titleStyle}>{selectedSubject}</h2>
 
-          <h2 style={titleStyle}>{selectedSubject}</h2>
-
-          <div style={cardContainer}>
-            {units.map((unit, index) => (
-              <div key={index} style={cardStyle}>
-                {unit}
-              </div>
-            ))}
-          </div>
+        <div style={cardContainer(isMobile)}>
+          {units.map((unit, i) => (
+            <div key={i} style={cardStyle(isMobile)}>
+              {unit}
+            </div>
+          ))}
         </div>
-      </div>
+      </Layout>
     );
   }
 
-  // SUBJECT LIST PAGE
+  // SUBJECT LIST
   if (year && semester) {
     const key = `${year}-${semester}`;
     const subjects = subjectsData[key] || [];
 
     return (
-      <div>
-        <header style={headerStyle}>📚 Surya Notes Portal</header>
+      <Layout>
+        <button style={backBtn} onClick={() => setSemester(null)}>
+          ⬅ Back
+        </button>
 
-        <div style={containerStyle}>
-          <button style={backBtn} onClick={() => setSemester(null)}>
-            ⬅ Back
-          </button>
+        <h2 style={titleStyle}>Select Subject</h2>
 
-          <h2 style={titleStyle}>Select Subject</h2>
-
-          <div style={cardContainer}>
-            {subjects.map((sub, index) => (
-              <div
-                key={index}
-                style={cardStyle}
-                onClick={() => setSelectedSubject(sub)}
-                onMouseEnter={(e) =>
-                  (e.currentTarget.style.transform = "scale(1.05)")
-                }
-                onMouseLeave={(e) =>
-                  (e.currentTarget.style.transform = "scale(1)")
-                }
-              >
-                {sub}
-              </div>
-            ))}
-          </div>
+        <div style={cardContainer(isMobile)}>
+          {subjects.map((sub, i) => (
+            <div
+              key={i}
+              style={cardStyle(isMobile)}
+              onClick={() => setSelectedSubject(sub)}
+            >
+              {sub}
+            </div>
+          ))}
         </div>
-      </div>
+      </Layout>
     );
   }
 
-  // SEMESTER PAGE
+  // SEMESTER
   if (year) {
     return (
-      <div>
-        <header style={headerStyle}>📚 Surya Notes Portal</header>
+      <Layout>
+        <button style={backBtn} onClick={() => setYear(null)}>
+          ⬅ Back
+        </button>
 
-        <div style={containerStyle}>
-          <button style={backBtn} onClick={() => setYear(null)}>
-            ⬅ Back
-          </button>
+        <h2 style={titleStyle}>Select Semester</h2>
 
-          <h2 style={titleStyle}>Select Semester</h2>
-
-          <div style={cardContainer}>
-            {[1, 2].map((sem) => (
-              <div
-                key={sem}
-                style={cardStyle}
-                onClick={() => setSemester(sem)}
-              >
-                Semester {sem}
-              </div>
-            ))}
-          </div>
+        <div style={cardContainer(isMobile)}>
+          {[1, 2].map((sem) => (
+            <div
+              key={sem}
+              style={cardStyle(isMobile)}
+              onClick={() => setSemester(sem)}
+            >
+              Semester {sem}
+            </div>
+          ))}
         </div>
-      </div>
+      </Layout>
     );
   }
 
-  // YEAR PAGE
+  // YEAR
   if (entered) {
     return (
-      <div>
-        <header style={headerStyle}>📚 Surya Notes Portal</header>
+      <Layout>
+        <h2 style={titleStyle}>Select Year</h2>
 
-        <div style={containerStyle}>
-          <h2 style={titleStyle}>Select Year</h2>
-
-          <div style={cardContainer}>
-            {[1, 2].map((yr) => (
-              <div
-                key={yr}
-                style={cardStyle}
-                onClick={() => setYear(yr)}
-              >
-                Year {yr}
-              </div>
-            ))}
-          </div>
+        <div style={cardContainer(isMobile)}>
+          {[1, 2].map((yr) => (
+            <div
+              key={yr}
+              style={cardStyle(isMobile)}
+              onClick={() => setYear(yr)}
+            >
+              Year {yr}
+            </div>
+          ))}
         </div>
-      </div>
+      </Layout>
     );
   }
 
   return <Home onEnter={() => setEntered(true)} />;
 }
 
-// 🎨 RESPONSIVE STYLES
+// 🎨 STYLES (DYNAMIC)
 
-const headerStyle = {
+const headerStyle = (isMobile) => ({
   background: "#4f46e5",
   color: "white",
-  padding: "14px",
-  fontSize: "clamp(16px, 3vw, 22px)",
+  padding: isMobile ? "12px" : "16px",
+  fontSize: isMobile ? "16px" : "22px",
   fontWeight: "bold",
   textAlign: "center",
-};
+});
 
-const containerStyle = {
-  maxWidth: "1200px",      // 🔥 center content
+const containerStyle = (isMobile) => ({
+  maxWidth: isMobile ? "100%" : "1100px",
   margin: "0 auto",
-  padding: "20px 16px",
-};
+  padding: isMobile ? "15px" : "25px",
+});
 
 const titleStyle = {
   fontSize: "clamp(18px, 4vw, 26px)",
@@ -167,21 +164,20 @@ const backBtn = {
   cursor: "pointer",
 };
 
-const cardContainer = {
-  marginTop: 20,
+const cardContainer = (isMobile) => ({
   display: "grid",
-  gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))", // 🔥 KEY CHANGE
-  gap: "20px",
-};
+  gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)",
+  gap: "16px",
+});
 
-const cardStyle = {
-  padding: "20px",
+const cardStyle = (isMobile) => ({
+  padding: isMobile ? "16px" : "22px",
   borderRadius: "16px",
   background: "linear-gradient(135deg, #7f1d1d, #b91c1c)",
   color: "white",
-  boxShadow: "0 6px 15px rgba(0,0,0,0.2)",
   fontWeight: "bold",
-  cursor: "pointer",
   textAlign: "center",
-  transition: "all 0.3s ease",
-};
+  cursor: "pointer",
+  boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
+  fontSize: isMobile ? "14px" : "16px",
+});

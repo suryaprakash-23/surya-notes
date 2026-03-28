@@ -141,14 +141,16 @@ export default function App() {
 const headerStyle = {
   background: "#4f46e5",
   color: "white",
-  padding: "12px 20px",
-  fontSize: "clamp(16px, 3vw, 22px)", // responsive text
+  padding: "14px",
+  fontSize: "clamp(16px, 3vw, 22px)",
   fontWeight: "bold",
   textAlign: "center",
 };
 
 const containerStyle = {
-  padding: "20px 5vw", // responsive padding
+  maxWidth: "1200px",      // 🔥 center content
+  margin: "0 auto",
+  padding: "20px 16px",
 };
 
 const titleStyle = {
@@ -158,7 +160,7 @@ const titleStyle = {
 
 const backBtn = {
   marginBottom: 20,
-  padding: "8px 14px",
+  padding: "10px 16px",
   borderRadius: "8px",
   border: "none",
   background: "#e5e7eb",
@@ -168,12 +170,12 @@ const backBtn = {
 const cardContainer = {
   marginTop: 20,
   display: "grid",
-  gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))",
-  gap: 20,
+  gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))", // 🔥 KEY CHANGE
+  gap: "20px",
 };
 
 const cardStyle = {
-  padding: "18px",
+  padding: "20px",
   borderRadius: "16px",
   background: "linear-gradient(135deg, #7f1d1d, #b91c1c)",
   color: "white",
@@ -181,5 +183,5 @@ const cardStyle = {
   fontWeight: "bold",
   cursor: "pointer",
   textAlign: "center",
-  transition: "0.3s",
+  transition: "all 0.3s ease",
 };
